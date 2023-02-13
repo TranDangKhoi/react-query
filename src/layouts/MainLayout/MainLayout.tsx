@@ -8,10 +8,7 @@ interface Props {
 export default function MainLayout({ children }: Props) {
   return (
     <div className="grid min-h-screen grid-cols-4">
-      <aside
-        className="col-span-1"
-        aria-label="Sidebar"
-      >
+      <aside className="col-span-1" aria-label="Sidebar">
         <div className="flex h-full flex-col overflow-y-auto bg-gray-100 py-4 px-3 shadow-lg">
           <ul className="space-y-2">
             <li>

@@ -8,3 +8,5 @@ export interface Student {
   avatar: string;
   btc_addres: string;
 }
+
+export type Students = Pick<Student, "id" | "email" | "avatar" | "last_name">[];

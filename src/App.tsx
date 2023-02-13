@@ -3,7 +3,7 @@ import About from "pages/About";
 import AddStudent from "pages/AddStudent";
 import Dashboard from "pages/Dashboard";
 import NotFound from "pages/NotFound";
-import Students from "pages/Students";
+import StudentList from "pages/Students";
 import { useRoutes } from "react-router-dom";
 
 function App() {
@@ -14,7 +14,7 @@ function App() {
     },
     {
       path: "/students",
-      element: <Students />
+      element: <StudentList />
     },
     {
       path: "/students/:id",
