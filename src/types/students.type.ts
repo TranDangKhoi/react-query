@@ -1,4 +1,4 @@
-export interface Student {
+export type StudentType = {
   id: number;
   first_name: string;
   last_name: string;
@@ -7,6 +7,6 @@ export interface Student {
   country: string;
   avatar: string;
   btc_addres: string;
-}
+};
 
-export type Students = Pick<Student, "id" | "email" | "avatar" | "last_name">[];
+export type StudentsType = Pick<StudentType, "id" | "email" | "avatar" | "last_name">[];
