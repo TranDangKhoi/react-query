@@ -4,21 +4,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useQueryString } from "hooks/useQueryString";
 
 export default function StudentList() {
-  // const [students, setStudents] = useState<StudentsType>([]);
-  // const [isLoading, setIsLoading] = useState<boolean>(false);
-  // useEffect(() => {
-  //   (async function fetchStudentList() {
-  //     setIsLoading(true);
-  //     try {
-  //       const res = await getStudents(1, 5);
-  //       setStudents(res.data);
-  //     } catch (err) {
-  //       console.log(err);
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   })();
-  // }, []);
   const queryString: { page?: string } = useQueryString();
   const page = Number(queryString.page) || 1;
   const { data, isFetching } = useQuery({
