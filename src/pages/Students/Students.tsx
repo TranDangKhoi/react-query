@@ -2,14 +2,20 @@ import { getStudents } from "apis/students.api";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useQueryString } from "hooks/useQueryString";
+import { useState } from "react";
+import classNames from "classnames";
+const LIMIT = 5;
 
 export default function StudentList() {
   const queryString: { page?: string } = useQueryString();
   const page = Number(queryString.page) || 1;
   const { data, isFetching } = useQuery({
-    queryKey: ["students", page],
-    queryFn: () => getStudents(page, 5)
+    queryKey: ["students", { page: page }],
+    queryFn: () => getStudents(page, LIMIT)
   });
+  const totalStudents = Number(data?.headers["x-total-count"]) || 0;
+  const totalPages = Math.ceil(totalStudents / LIMIT);
+  console.log(totalPages);
   return (
     <div>
       <h1 className="text-lg">Students</h1>
@@ -90,14 +96,27 @@ export default function StudentList() {
                     Previous
                   </span>
                 </li>
-                <li>
-                  <a
-                    className="border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-                    href="/students?page=8"
-                  >
-                    1
-                  </a>
-                </li>
+                {Array(totalPages)
+                  .fill(0)
+                  .map((_, index) => {
+                    const pageNumber = index + 1;
+                    const isActive = page === pageNumber;
+                    return (
+                      <li key={pageNumber}>
+                        <Link
+                          className={classNames(
+                            `border border-gray-300 px-3 py-2 leading-tight`,
+                            "hover:bg-gray-100 hover:text-gray-700",
+                            { "bg-gray-100 text-gray-700": isActive },
+                            { "bg-white text-gray-500": !isActive }
+                          )}
+                          to={`/students?page=${pageNumber}`}
+                        >
+                          {pageNumber}
+                        </Link>
+                      </li>
+                    );
+                  })}
                 <li>
                   <a
                     className="rounded-r-lg border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
