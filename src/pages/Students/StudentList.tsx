@@ -2,24 +2,32 @@ import { getStudents } from "apis/students.api";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useQueryString } from "hooks/useQueryString";
-import { useState } from "react";
 import classNames from "classnames";
-const LIMIT = 5;
 
+const LIMIT = 5;
 export default function StudentList() {
   const queryString: { page?: string } = useQueryString();
   const page = Number(queryString.page) || 1;
-  const { data, isFetching } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["students", { page: page }],
-    queryFn: () => getStudents(page, LIMIT)
+    queryFn: () => getStudents(page, LIMIT),
+    staleTime: 60 * 1000,
+    // keepPreviousData: true,
   });
   const totalStudents = Number(data?.headers["x-total-count"]) || 0;
   const totalPages = Math.ceil(totalStudents / LIMIT);
-  console.log(totalPages);
   return (
     <div>
       <h1 className="text-lg">Students</h1>
-      {isFetching && (
+      <div className="my-10 text-center ">
+        <Link
+          to={"/students/add"}
+          className="rounded-full bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+        >
+          Add student
+        </Link>
+      </div>
+      {isLoading && (
         <div role="status" className="mt-6 animate-pulse">
           <div className="mb-4 h-4 rounded bg-gray-200 dark:bg-gray-700" />
           <div className="mb-2.5 h-10  rounded bg-gray-200 dark:bg-gray-700" />
@@ -37,7 +45,7 @@ export default function StudentList() {
           <span className="sr-only">Loading...</span>
         </div>
       )}
-      {!isFetching && (
+      {!isLoading && (
         <>
           <div className="relative mt-6 overflow-x-auto shadow-md sm:rounded-lg">
             <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
@@ -92,9 +100,26 @@ export default function StudentList() {
             <nav aria-label="Page navigation example">
               <ul className="inline-flex -space-x-px">
                 <li>
-                  <span className="cursor-not-allowed rounded-l-lg border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                    Previous
-                  </span>
+                  {page === 1 ? (
+                    <span
+                      className={classNames(
+                        "cursor-not-allowed select-none rounded-l-lg border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500",
+                        // Interactive
+                        "hover:bg-gray-100 hover:text-gray-700",
+                        // Dark mode
+                        "dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white",
+                      )}
+                    >
+                      Previous
+                    </span>
+                  ) : (
+                    <Link
+                      className="cursor-pointer rounded-l-lg border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                      to={`/students?page=${page - 1}`}
+                    >
+                      Previous
+                    </Link>
+                  )}
                 </li>
                 {Array(totalPages)
                   .fill(0)
@@ -108,7 +133,7 @@ export default function StudentList() {
                             `border border-gray-300 px-3 py-2 leading-tight`,
                             "hover:bg-gray-100 hover:text-gray-700",
                             { "bg-gray-100 text-gray-700": isActive },
-                            { "bg-white text-gray-500": !isActive }
+                            { "bg-white text-gray-500": !isActive },
                           )}
                           to={`/students?page=${pageNumber}`}
                         >
@@ -118,12 +143,28 @@ export default function StudentList() {
                     );
                   })}
                 <li>
-                  <a
-                    className="rounded-r-lg border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                    href="/students?page=1"
-                  >
-                    Next
-                  </a>
+                  {page === totalPages ? (
+                    <span
+                      className={classNames(
+                        "cursor-not-allowed select-none rounded-r-lg border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500",
+                        "hover:bg-gray-100 hover:text-gray-700",
+                        "dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white",
+                      )}
+                    >
+                      Next
+                    </span>
+                  ) : (
+                    <Link
+                      className={classNames(
+                        "cursor-pointer rounded-r-lg border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500",
+                        "hover:bg-gray-100 hover:text-gray-700",
+                        "dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white",
+                      )}
+                      to={`/students?page=${page + 1}`}
+                    >
+                      Next
+                    </Link>
+                  )}
                 </li>
               </ul>
             </nav>
