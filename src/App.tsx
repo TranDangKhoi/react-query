@@ -10,28 +10,28 @@ function App() {
   const elements = useRoutes([
     {
       path: "/",
-      element: <Dashboard />
+      element: <Dashboard />,
     },
     {
       path: "/students",
-      element: <StudentList />
+      element: <StudentList />,
     },
     {
       path: "/students/:id",
-      element: <AddStudent />
+      element: <AddStudent />,
     },
     {
       path: "/students/add",
-      element: <AddStudent />
+      element: <AddStudent />,
     },
     {
       path: "/about",
-      element: <About />
+      element: <About />,
     },
     {
       path: "*",
-      element: <NotFound />
-    }
+      element: <NotFound />,
+    },
   ]);
 
   return (
