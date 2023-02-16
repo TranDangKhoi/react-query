@@ -27,7 +27,7 @@ export default function AddStudent() {
   const [formState, setFormState] = useState<InitialFormStateType>(initialState);
   const addMatch = useMatch("/students/add");
   const isAddmode = Boolean(addMatch);
-  const { mutate, data, error, reset } = useMutation({
+  const { mutate, mutateAsync, data, error, reset } = useMutation({
     mutationFn: (body: InitialFormStateType) => {
       return addStudent(body);
     },
@@ -47,20 +47,14 @@ export default function AddStudent() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    mutate(formState, {
-      onSuccess: (data, variables, context) => {
-        // là response trả về
-        // console.log("data", data);
-        // là thông tin payload bạn vừa gửi lên server
-        // console.log("variables", variables);
-        // undefined: mình chưa rõ nó là cái gì
-        // console.log("context", context);
-        setFormState(initialState);
-      },
-    });
-    // console.log(formState);
+    try {
+      const data = await mutateAsync(formState);
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
