@@ -1,3 +1,3 @@
-import StudentList from "./Students";
+import StudentList from "./StudentList";
 
 export default StudentList;
