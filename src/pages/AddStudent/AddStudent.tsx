@@ -27,7 +27,7 @@ export default function AddStudent() {
   const [formState, setFormState] = useState<InitialFormStateType>(initialState);
   const addMatch = useMatch("/students/add");
   const isAddmode = Boolean(addMatch);
-  const { mutate, mutateAsync, data, error, reset } = useMutation({
+  const { mutate, data, error, reset } = useMutation({
     mutationFn: (body: InitialFormStateType) => {
       return addStudent(body);
     },
@@ -47,14 +47,13 @@ export default function AddStudent() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try {
-      const data = await mutateAsync(formState);
-      console.log(data);
-    } catch (error) {
-      console.log(error);
-    }
+    mutate(formState, {
+      onSuccess: () => {
+        setFormState(initialState);
+      },
+    });
   };
 
   return (
