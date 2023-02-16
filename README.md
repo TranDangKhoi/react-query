@@ -54,8 +54,12 @@ useQuery({
 
 ## Một số khái niệm quan trọng
 
-- `staleTime` (default `0` ms): Thời gian data được cho là đã cũ. Khi get data xong thì sau một thời gian bạn quy định thì data nó sẽ tự cũ. **Lưu ý cái `stale` trên dev tool nó hiển thị là data của bạn `stale` và `active`**
+- `staleTime` (default `0` ms): Thời gian data **`được cho là đã cũ - stale`**. Khi GET data xong thì React Query sẽ đưa đống data bạn vừa GET vào một vùng gọi là **`vùng chứa những data cũ - vùng state`** nếu như bạn không config `staleTime` cho nó. vô hình chung, mỗi lần bạn thực hiện lại các thao tác cũ thì nó sẽ thực hiện call API cũ lại nhiều lần VÀ chúng ta không nên để điều đó xảy ra. Vì vậy ta phải set `staleTime` cho query hiện tại
+
+  > **Lưu ý cái `stale` trên dev tool nó hiển thị là data của bạn `stale` và `active`**
+
 - `cacheTime` (default `5*60*1000` ms tức 5 phút): Thời gian data sẽ bị xóa ra khỏi bộ nhớ đệm. Có thể data đã "cũ" nhưng nó chưa bị xóa ra khỏi bộ nhớ đệm vì bạn set `staleTime < cacheTime`. Thường thì người ta sẽ set `staleTime < cacheTime`
+
 - `inactive`: là khi data đó không còn component nào subcribe cả
 
 ```tsx
