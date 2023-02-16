@@ -20,7 +20,9 @@ React Query có cơ chế caching hơi khác một chút so với RTK Query, nê
 
 ## Một số khái niệm cơ bản
 
-- `useQuery({})`: Một hook được tích hợp sẵn trong thư viện Tanstack Query, dùng để chứa **`queryKey`** và **`queryFn`**
+### GET
+
+- `useQuery({})`: Một hook được tích hợp sẵn trong thư viện Tanstack Query, dùng vào việc đọc dữ liệu (READ) và được truyền vào một số thuộc tính tiêu biểu mà mình nêu ở dưới
 
 - `queryKey: [name, deps]`: Là một array chứa các giá trị cần có của nó
 
@@ -42,15 +44,35 @@ useQuery({
   queryFn: async () => {
     const data = await fetchTodoById(todoId);
     return data;
-  }
+  },
 });
 
 // Hoặc là sử dụng để trả về giá trị của một queryKey nào đó
 useQuery({
   queryKey: ["todos", todoId],
-  queryFn: ({ queryKey }) => fetchTodoById(queryKey[1])
+  queryFn: ({ queryKey }) => fetchTodoById(queryKey[1]),
 });
 ```
+
+Quan trọng thêm nữa, useQuery chứa một số thuộc tính như:
+
+- `data`: Chứa dữ liệu trả về từ APIs
+
+- `isLoading`: Trả về một giá trị **`boolean`**, detect được khi nào data được trả về từ API đang được fetch là data mới hoàn toàn - chưa được fetch về trước đây (vì khi data được fetch về nó sẽ được lưu trong bộ nhớ cache của react-query) và nếu quay lại xem data cũ thì data đó vẫn sẽ hiển thị ra ngay lập tức và giá trị boolean của isLoading trả về vẫn sẽ là false
+
+- `isFetching`: Trả về một giá trị **`boolean`**, nhưng mỗi khi chuyển sang dữ liệu data mới và quay lại data cũ thì data cũ sẽ được fetch lại từ đầu và giá trị boolean trả về của isFetching sẽ là true
+
+- `keepPreviousData`: Như tên gọi, nó giữ lại tất cả các data đã được fetch trước đó dựa trên staleTime và cacheTime ta config. Sau này gọi lại thì không cần fetch từ đầu
+
+### POST, PUT, PATCH, ...
+
+`useMutation`: Một hook được tích hợp sẵn trong thư viện Tanstack Query, dùng vào việc mutate (Create/Update/Delete) và chứa một số thuộc tính tiêu biểu mà mình nêu ở dưới
+
+- `mutate`:
+
+- `mutateAsync`:
+
+- `reset`:
 
 ## Một số khái niệm quan trọng
 
