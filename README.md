@@ -68,11 +68,52 @@ Quan trọng thêm nữa, useQuery chứa một số thuộc tính như:
 
 `useMutation`: Một hook được tích hợp sẵn trong thư viện Tanstack Query, dùng vào việc mutate (Create/Update/Delete) và chứa một số thuộc tính tiêu biểu mà mình nêu ở dưới
 
-- `mutate`:
+- `mutate`: Dùng để mutate data trong server
 
-- `mutateAsync`:
+```tsx
+const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  mutate(formState, {
+    onSuccess: (data, variables, context) => {
+      // data là response trả về
+      // console.log("data", data);
+      // variables là thông tin payload bạn vừa gửi lên server
+      // console.log("variables", variables);
+      // undefined: mình chưa rõ nó là cái gì
+      // console.log("context", context);
+      setFormState(initialState);
+    },
+  });
+};
 
-- `reset`:
+return (
+  <form onSubmit={handleSubmit}>
+  Your TSX Elements
+  </form>;
+)
+```
+
+- `mutateAsync`: Cũng như trên nhưng nó trả về một promise thôi, dùng cái nào cũng được cả
+
+```tsx
+const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  try {
+    const data = await mutateAsync(formState);
+    console.log(data);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+return (
+  <form onSubmit={handleSubmit}>
+  Your TSX Elements
+  </form>;
+)
+```
+
+- `reset`: Reset toàn bộ giá trị `(error, data, ...)` nằm trong hook useMutation về giá trị nguyên thủy **(không phải reset value của các fields trong form đâu nha)**
 
 ## Một số khái niệm quan trọng
 
