@@ -1,10 +1,19 @@
 import { useMutation } from "@tanstack/react-query";
 import { addStudent } from "apis/students.api";
-import React, { useState } from "react";
+import { AxiosError } from "axios";
+import React, { useMemo, useState } from "react";
 import { useMatch } from "react-router-dom";
 import { StudentType } from "types/students.type";
+import { isAxiosError } from "utils/isAxiosError";
 
 type InitialFormStateType = Omit<StudentType, "id">;
+
+type ErrorFormType =
+  | {
+      [key in keyof InitialFormStateType]: string;
+    }
+  | null;
+
 const initialState: InitialFormStateType = {
   avatar: "",
   btc_address: "",
@@ -18,20 +27,38 @@ export default function AddStudent() {
   const [formState, setFormState] = useState<InitialFormStateType>(initialState);
   const addMatch = useMatch("/students/add");
   const isAddmode = Boolean(addMatch);
-  const { mutate } = useMutation({
+  const { mutate, data, error, reset } = useMutation({
     mutationFn: (body: InitialFormStateType) => {
       return addStudent(body);
     },
   });
 
+  const formError: ErrorFormType = useMemo(() => {
+    if (isAxiosError<{ error: ErrorFormType }>(error) && error.response?.status === 422) {
+      return error.response.data.error;
+    }
+    return null;
+  }, [error]);
+
   const handleChangeInputValue = (name: keyof InitialFormStateType) => (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormState((prev) => ({ ...prev, [name]: event.target.value }));
+    if (data || error) {
+      reset();
+    }
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     mutate(formState, {
-      onError: (error, variables, context) => {},
+      onSuccess: (data, variables, context) => {
+        // là response trả về
+        // console.log("data", data);
+        // là thông tin payload bạn vừa gửi lên server
+        // console.log("variables", variables);
+        // undefined: mình chưa rõ nó là cái gì
+        // console.log("context", context);
+        setFormState(initialState);
+      },
     });
     // console.log(formState);
   };
@@ -56,6 +83,7 @@ export default function AddStudent() {
           >
             Email address
           </label>
+          {formError && <span className="text-red-500">{formError.email}</span>}
         </div>
 
         <div className="group relative z-0 mb-6 w-full">
