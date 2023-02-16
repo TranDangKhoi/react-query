@@ -6,7 +6,7 @@ export type StudentType = {
   gender: string;
   country: string;
   avatar: string;
-  btc_addres: string;
+  btc_address: string;
 };
 
 export type StudentsType = Pick<StudentType, "id" | "email" | "avatar" | "last_name">[];
